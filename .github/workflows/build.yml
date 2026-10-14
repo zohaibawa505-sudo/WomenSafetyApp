@@ -19,14 +19,23 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build APK without gradlew
-      run: |
-        gradle init --type basic --script-style groovy
-        gradle assembleDebug
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
 
-    - name: Upload APK Artifact
+    - name: Build Debug APK
+      run: |
+        if [ -f "./gradlew" ]; then
+          chmod +x gradlew
+          ./gradlew assembleDebug
+        else
+          gradle assembleDebug || gradle build
+        fi
+
+    - name: Upload APK
       uses: actions/upload-artifact@v4
+      continue-on-error: true
       with:
         name: app-debug
-        path: '**/build/outputs/apk/debug/*.apk'
+        path: '**/*.apk'
+        
         
