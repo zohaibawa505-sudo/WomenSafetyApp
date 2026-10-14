@@ -19,10 +19,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build with Gradle
-      run: gradle assembleDebug
+    - name: Build APK without gradlew
+      run: |
+        gradle init --type basic --script-style groovy
+        gradle assembleDebug
 
-    - name: Upload APK
+    - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
